@@ -1,5 +1,7 @@
 package me.nithanim.cultures.formats.lib;
 
+import me.nithanim.cultures.formats.lib.internal.DirMeta;
+
 public interface ArchiveDirectory {
     /**
      * Returns the path name
@@ -16,4 +18,9 @@ public interface ArchiveDirectory {
      * @return Depth of path
      */
     int getLevel();
+    
+    /**
+     * INTERNAL!
+     */
+    DirMeta getDirMeta();
 }

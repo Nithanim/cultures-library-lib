@@ -18,4 +18,9 @@ public class ArchiveDirectoryImpl implements ArchiveDirectory {
     public int getLevel() {
         return (int)dirMeta.getLevel();
     }
+
+    @Override
+    public DirMeta getDirMeta() {
+        return dirMeta;
+    }
 }

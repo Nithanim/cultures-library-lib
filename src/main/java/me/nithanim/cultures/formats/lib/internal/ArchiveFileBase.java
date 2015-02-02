@@ -6,7 +6,7 @@ public abstract class ArchiveFileBase implements ArchiveFile {
     protected final ByteBuf buf;
     
     protected int unknown;
-    protected FileMeta[] fileMetas;
+    protected FileMetaImpl[] fileMetas;
 
     public ArchiveFileBase(ByteBuf buf) {
         this.buf = buf;
@@ -23,13 +23,13 @@ public abstract class ArchiveFileBase implements ArchiveFile {
     }
 
     @Override
-    public FileMeta[] getFileMetas() {
+    public FileMetaImpl[] getFileMetas() {
         return fileMetas;
     }
     
-    protected void readFileMetas(ByteBuf buf, FileMeta[] fileMetas) {
+    protected void readFileMetas(ByteBuf buf, FileMetaImpl[] fileMetas) {
         for(int i = 0; i < fileMetas.length; i++) {
-            FileMeta fileMeta = new FileMeta(buf);
+            FileMetaImpl fileMeta = new FileMetaImpl(buf);
             fileMetas[i] = fileMeta;
         }
     }

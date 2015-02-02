@@ -6,15 +6,15 @@ import java.io.IOException;
 import me.nithanim.cultures.formats.lib.internal.FileExtractor;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
 
-public class ArchiveFileImpl implements ArchiveFile {
+public class ReadableArchiveFileImpl implements ReadableArchiveFile {
     private final FileMeta fileMeta;
     private final ByteBuf buf;
     
     private File file;
     
-    ArchiveFileImpl(FileMeta fileMeta, ByteBuf buf) {
+    public ReadableArchiveFileImpl(FileMeta fileMeta, ByteBuf buf) {
         this.fileMeta = fileMeta;
-        this.buf = buf.slice((int)fileMeta.getPos(), (int)fileMeta.getLength());
+        this.buf = buf;
     }
     
     @Override
@@ -41,19 +41,38 @@ public class ArchiveFileImpl implements ArchiveFile {
     
     @Override
     public void extractTo(File dest) throws IOException {
-        FileExtractor.extract(buf, dest);
+        extractTo0(dest);
     }
 
     @Override
-    public void extractToWithOriginalDirecotry(File dest) throws IOException {
+    public void extractToWithOriginalDirectory(File dest) throws IOException {
         File target = new File(dest, getFullPath());
         target.getParentFile().mkdirs();
-        FileExtractor.extract(buf, target);
+        extractTo0(target);
+    }
+    
+    private void extractTo0(File dest) throws IOException {
+        FileExtractor.extract(getBuffer(), dest);
     }
     
     private void ensureFile() {
         if(file == null) {
             file = new File(fileMeta.getName());
         }
+    }
+
+    @Override
+    public ByteBuf getBuffer() {
+        return buf.slice((int)fileMeta.getPos(), (int)fileMeta.getLength());
+    }
+
+    @Override
+    public FileMeta getFileMeta() {
+        return fileMeta;
+    }
+
+    @Override
+    public int getSize() {
+        return (int)fileMeta.getLength();
     }
 }

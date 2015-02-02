@@ -27,14 +27,13 @@ public class ArchiveFileDirs extends ArchiveFileBase {
         dirMetas = new DirMeta[dirCount];
         readDirMetas(buf, dirMetas);
         
-        fileMetas = new FileMeta[fileCount];
+        fileMetas = new FileMetaImpl[fileCount];
         readFileMetas(buf, fileMetas);
     }
     
     protected void readDirMetas(ByteBuf buf, DirMeta[] dirMetas) {
         for(int i = 0; i < dirMetas.length; i++) {
-            DirMeta dirMeta = new DirMeta();
-            dirMeta.read(buf);
+            DirMeta dirMeta = new DirMeta(buf);
             dirMetas[i] = dirMeta;
         }
     }
