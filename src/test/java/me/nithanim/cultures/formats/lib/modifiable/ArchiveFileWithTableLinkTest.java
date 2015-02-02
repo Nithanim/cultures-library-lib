@@ -93,18 +93,4 @@ public class ArchiveFileWithTableLinkTest {
         FileMeta fileMeta = new FileMetaImpl(name, contentPos, content.length);
         return new ReadableArchiveFileImpl(fileMeta, Unpooled.wrappedBuffer(content));
     }
-
-    /**
-     * Test of getArchiveFile method, of class ArchiveFileWithTableLink.
-     */
-    @Test
-    public void testGetArchiveFile() {
-        System.out.println("getArchiveFile");
-        ArchiveFileWithTableLink instance = null;
-        ArchiveFile expResult = null;
-        ArchiveFile result = instance.getArchiveFile();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 }
