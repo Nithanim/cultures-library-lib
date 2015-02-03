@@ -26,8 +26,8 @@ public class LibWriter {
     private int fileTablePos = -1;
     private int contentPos = -1;
     
-    public LibWriter(Set<ArchiveDirectory> direcoties, List<ArchiveFile> files) {
-        this.directories = direcoties;
+    public LibWriter(Set<ArchiveDirectory> directory, List<ArchiveFile> files) {
+        this.directories = directory;
         this.files = new LinkedList<ArchiveFileWithTableLink>();
         for(ArchiveFile af : files) {
             this.files.add(new ArchiveFileWithTableLink(af));
