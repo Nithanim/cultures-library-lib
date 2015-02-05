@@ -3,6 +3,7 @@ package me.nithanim.cultures.formats.lib.modifiable;
 import io.netty.buffer.ByteBuf;
 import java.nio.charset.Charset;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
+import me.nithanim.cultures.formats.lib.util.Disposable;
 
 /**
  * A wrapper class that can write the table entry at the beginning
@@ -10,7 +11,7 @@ import me.nithanim.cultures.formats.lib.ArchiveFile;
  * content starting position in the table entry when actually writing
  * the content.
  */
-class ArchiveFileWithTableLink {
+class ArchiveFileWithTableLink implements Disposable {
     private static final Charset CHARSET = Charset.forName("US-ASCII");
     
     private final ArchiveFile archiveFile;
@@ -44,5 +45,11 @@ class ArchiveFileWithTableLink {
 
     public ArchiveFile getArchiveFile() {
         return archiveFile;
+    }
+
+    @Override
+    public void dispose() {
+        tableEntryBuffer.release();
+        tableEntryBuffer = null;
     }
 }

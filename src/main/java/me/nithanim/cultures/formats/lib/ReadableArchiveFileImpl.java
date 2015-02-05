@@ -5,16 +5,17 @@ import java.io.File;
 import java.io.IOException;
 import me.nithanim.cultures.formats.lib.internal.FileExtractor;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
+import me.nithanim.cultures.formats.lib.util.Disposable;
 
-public class ReadableArchiveFileImpl implements ReadableArchiveFile {
+public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable {
     private final FileMeta fileMeta;
-    private final ByteBuf buf;
+    private final ByteBuf buffer;
     
     private File file;
     
-    public ReadableArchiveFileImpl(FileMeta fileMeta, ByteBuf buf) {
+    public ReadableArchiveFileImpl(FileMeta fileMeta, ByteBuf buffer) {
         this.fileMeta = fileMeta;
-        this.buf = buf;
+        this.buffer = buffer.slice((int)fileMeta.getPos(), (int)fileMeta.getLength());
     }
     
     @Override
@@ -63,7 +64,7 @@ public class ReadableArchiveFileImpl implements ReadableArchiveFile {
 
     @Override
     public ByteBuf getBuffer() {
-        return buf.slice((int)fileMeta.getPos(), (int)fileMeta.getLength());
+        return buffer;
     }
 
     @Override
@@ -74,5 +75,10 @@ public class ReadableArchiveFileImpl implements ReadableArchiveFile {
     @Override
     public int getSize() {
         return (int)fileMeta.getLength();
+    }
+
+    @Override
+    public void dispose() {
+        buffer.release();
     }
 }

@@ -1,7 +1,5 @@
 package me.nithanim.cultures.formats.lib.archive;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
 

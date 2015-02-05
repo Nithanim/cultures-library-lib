@@ -18,11 +18,13 @@ import me.nithanim.cultures.formats.lib.ReadableArchiveFileImpl;
 import me.nithanim.cultures.formats.lib.internal.ArchiveFileDirs;
 import me.nithanim.cultures.formats.lib.internal.DirMeta;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
+import me.nithanim.cultures.formats.lib.util.Disposable;
+import me.nithanim.cultures.formats.lib.util.Disposer;
 
-public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive {
+public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Disposable {
     private File boundTo;
     
-    private FileChannel fileChannel;
+    private RandomAccessFile randomAccessFile;
     protected ArchiveFileDirs internal;
     private ByteBuf buffer;
     
@@ -67,8 +69,7 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive {
         }
         try {
             boundTo = file;
-            RandomAccessFile raf = new RandomAccessFile(file, "r");
-            fileChannel = raf.getChannel();
+            randomAccessFile = new RandomAccessFile(file, "r");
             reload();
         } catch(IOException e) {
             unbind();
@@ -77,7 +78,7 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive {
     }
     
     private void reload() throws IOException {
-        MappedByteBuffer mbb = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+        MappedByteBuffer mbb = randomAccessFile.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, randomAccessFile.length());
         buffer = Unpooled.unmodifiableBuffer(Unpooled.wrappedBuffer(mbb)).order(ByteOrder.LITTLE_ENDIAN);
         internal = new ArchiveFileDirs(buffer);
         internal.readMetas();
@@ -85,18 +86,7 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive {
 
     @Override
     public void unbind() {
-        try {
-            fileChannel.close();
-        } catch(Exception e) {
-        }
-        
-        internal = null;
-        buffer = null;
-        fileChannel = null;
-        boundTo = null;
-        
-        archiveDirectories = null;
-        archiveFiles = null;
+        dispose();
     }
     
     private List<ArchiveDirectory> convertDirMetaToArchiveDirectoryList(DirMeta[] dirMetas) {
@@ -131,5 +121,31 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive {
     @Override
     public boolean isBound() {
         return getBoundFile() != null;
+    }
+
+    @Override
+    public void dispose() {
+        internal = null;
+        if(buffer != null) {
+            buffer.release();
+            buffer = null;
+        }
+        
+        if(archiveDirectories != null) {
+            Disposer.dispose(archiveDirectories);
+            archiveDirectories = null;
+        }
+        
+        if(archiveFiles != null) {
+            Disposer.dispose(archiveFiles);
+            archiveFiles = null;
+        }
+        
+        try {
+            randomAccessFile.close();
+        } catch(Exception e) {
+        }
+        randomAccessFile = null;
+        boundTo = null;
     }
 }

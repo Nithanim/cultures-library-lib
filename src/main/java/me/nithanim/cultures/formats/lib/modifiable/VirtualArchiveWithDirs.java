@@ -11,8 +11,9 @@ import me.nithanim.cultures.formats.lib.ArchiveDirectory;
 import me.nithanim.cultures.formats.lib.ArchiveDirectoryImpl;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
 import me.nithanim.cultures.formats.lib.internal.DirMeta;
+import me.nithanim.cultures.formats.lib.util.Disposable;
 
-public class VirtualArchiveWithDirs implements VirtualArchive {
+public class VirtualArchiveWithDirs implements VirtualArchive, Disposable {
     private final List<VirtualArchiveFile> filesToBeAdded = new LinkedList<VirtualArchiveFile>();
     
     @Override
@@ -85,5 +86,10 @@ public class VirtualArchiveWithDirs implements VirtualArchive {
     @Override
     public int getFileCount() {
         return filesToBeAdded.size();
+    }
+
+    @Override
+    public void dispose() {
+        
     }
 }

@@ -21,7 +21,7 @@ public class LibWriter {
     private final Set<ArchiveDirectory> directories;
     private final List<ArchiveFileWithTableLink> files;
     
-    private FileChannel fileChannel;
+    private RandomAccessFile randomAccessFile;
     private int dirTablePos = 3 * 4;
     private int fileTablePos = -1;
     private int contentPos = -1;
@@ -35,17 +35,18 @@ public class LibWriter {
     }
     
     void writeToFile(File dest) throws IOException {
-        RandomAccessFile raf = new RandomAccessFile(dest, "rw");
-        fileChannel = raf.getChannel();
+        randomAccessFile = new RandomAccessFile(dest, "rw");
+        FileChannel ch = randomAccessFile.getChannel();
         
         try {
             writeBeginning();
             writeDirectoryTable();
             writeFileTable();
             writeFileContents();
-            fileChannel.force(false);
+            ch.force(false);
         } finally {
-            fileChannel.close();
+            ch.close();
+            randomAccessFile.close();
         }
     }
     
@@ -89,10 +90,9 @@ public class LibWriter {
     }
     
     private ByteBuf getSizedBuffer(int pos, int length) throws IOException {
-        MappedByteBuffer mbb = fileChannel.map(FileChannel.MapMode.READ_WRITE, pos, length);
+        MappedByteBuffer mbb = randomAccessFile.getChannel().map(FileChannel.MapMode.READ_WRITE, pos, length);
         ByteBuf buffer = Unpooled.wrappedBuffer(mbb).order(ByteOrder.LITTLE_ENDIAN);
         buffer.writerIndex(0); //unsure why needed
         return buffer;
     }
-    
 }
