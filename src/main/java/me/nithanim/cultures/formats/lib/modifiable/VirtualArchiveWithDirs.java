@@ -79,6 +79,16 @@ public class VirtualArchiveWithDirs implements VirtualArchive, Disposable {
     }
 
     @Override
+    public ArchiveFile getFileByVirtualPath(String path) {
+        for(VirtualArchiveFile file : filesToBeAdded) {
+            if(file.getFullPath().equals(path)) {
+                return file;
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public int getUnknown() {
         return 1; //since it seems like a constant
     }

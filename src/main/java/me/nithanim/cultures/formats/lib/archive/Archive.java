@@ -21,4 +21,6 @@ public interface Archive {
      * @return List of files in the same order as they are stored
      */
     List<? extends ArchiveFile> getFileList();
+    
+    ArchiveFile getFileByVirtualPath(String path);
 }

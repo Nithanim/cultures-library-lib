@@ -8,6 +8,9 @@ import me.nithanim.cultures.formats.lib.ReadableArchiveFile;
 public interface ReadableArchive extends Archive {
     @Override
     List<ReadableArchiveFile> getFileList();
+
+    @Override
+    public ReadableArchiveFile getFileByVirtualPath(String path);
     
     /**
      * Bind this instance of an archive to a specific file in 

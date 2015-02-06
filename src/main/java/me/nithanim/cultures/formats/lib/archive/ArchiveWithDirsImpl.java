@@ -61,6 +61,16 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Di
         }
         return archiveFiles;
     }
+
+    @Override
+    public ReadableArchiveFile getFileByVirtualPath(String path) {
+        for(ReadableArchiveFile file : getFileList()) {
+            if(file.getFullPath().equals(path)) {
+                return file;
+            }
+        }
+        return null;
+    }
     
     @Override
     public void bindTo(File file) throws IOException {
