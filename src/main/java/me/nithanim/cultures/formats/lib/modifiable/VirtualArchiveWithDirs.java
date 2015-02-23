@@ -31,13 +31,13 @@ public class VirtualArchiveWithDirs implements VirtualArchive, Disposable {
         } else if(!src.exists()) {
             throw new IllegalArgumentException(src + " does not exist!");
         }
-        appendDirectory0(src.getAbsolutePath().length() + 1, src); //+1 to cut off "\" at beginning of virtual path
+        _appendDirectory(src.getAbsolutePath().length() + 1, src); //+1 to cut off "\" at beginning of virtual path
     }
     
-    private void appendDirectory0(int virtualPathOffset, File src) {
+    private void _appendDirectory(int virtualPathOffset, File src) {
         for(File f : src.listFiles()) {
             if(f.isDirectory()) {
-                appendDirectory0(virtualPathOffset, f);
+                _appendDirectory(virtualPathOffset, f);
             } else {
                 appendFile(new File(f.getAbsolutePath().substring(virtualPathOffset)), f);
             }

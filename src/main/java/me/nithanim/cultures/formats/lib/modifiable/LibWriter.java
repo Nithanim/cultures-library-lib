@@ -1,19 +1,17 @@
 package me.nithanim.cultures.formats.lib.modifiable;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import me.nithanim.cultures.formats.lib.ArchiveDirectory;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
+import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
 
 public class LibWriter {
     private static final Charset CHARSET = Charset.forName("US-ASCII");
@@ -21,7 +19,7 @@ public class LibWriter {
     private final Set<ArchiveDirectory> directories;
     private final List<ArchiveFileWithTableLink> files;
     
-    private RandomAccessFile randomAccessFile;
+    private Buffer destFileBuffer;
     private int dirTablePos = 3 * 4;
     private int fileTablePos = -1;
     private int contentPos = -1;
@@ -35,23 +33,22 @@ public class LibWriter {
     }
     
     void writeToFile(File dest) throws IOException {
-        randomAccessFile = new RandomAccessFile(dest, "rw");
-        FileChannel ch = randomAccessFile.getChannel();
+        RandomAccessFile raf = new RandomAccessFile(dest, "rw");
+        destFileBuffer = new RandomAccessFileBuffer(raf).order(ByteOrder.LITTLE_ENDIAN);
         
         try {
             writeBeginning();
             writeDirectoryTable();
             writeFileTable();
             writeFileContents();
-            ch.force(false);
+            raf.getChannel().force(false);
         } finally {
-            ch.close();
-            randomAccessFile.close();
+            destFileBuffer.dispose();
         }
     }
     
     private void writeBeginning() throws IOException {
-        ByteBuf buffer = getSizedBuffer(0, 3*4);
+        Buffer buffer = getSizedBuffer(0, 3*4);
         buffer.writeInt(1);
         buffer.writeInt(directories.size());
         buffer.writeInt(files.size());
@@ -61,7 +58,7 @@ public class LibWriter {
         int lastAddr = dirTablePos;
         for(ArchiveDirectory ad : directories) {
             int size = 4 + ad.getName().length() + 4;
-            ByteBuf buffer = getSizedBuffer(lastAddr, size);
+            Buffer buffer = getSizedBuffer(lastAddr, size);
             buffer.writeInt(ad.getName().length());
             buffer.writeBytes(ad.getName().getBytes(CHARSET));
             buffer.writeInt(ad.getLevel());
@@ -89,10 +86,7 @@ public class LibWriter {
         }
     }
     
-    private ByteBuf getSizedBuffer(int pos, int length) throws IOException {
-        MappedByteBuffer mbb = randomAccessFile.getChannel().map(FileChannel.MapMode.READ_WRITE, pos, length);
-        ByteBuf buffer = Unpooled.wrappedBuffer(mbb).order(ByteOrder.LITTLE_ENDIAN);
-        buffer.writerIndex(0); //unsure why needed
-        return buffer;
+    private Buffer getSizedBuffer(long index, long length) throws IOException {
+        return destFileBuffer.slice(index, length);
     }
 }

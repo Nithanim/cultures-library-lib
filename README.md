@@ -23,5 +23,9 @@ a.saveFile(dest);
 
 ## License
 This library is released under the Apache License Version 2.0.
-Thanks to [netty](http://netty.io/) for their aweseome buffer library.
+
+Thanks to [netty](http://netty.io/) for their aweseome buffer library, which is not directly used any more in this project.
+An own implementation of Buffer is now used (that is compatible with the method names and arguments) but uses long for indexes instead to be able to use it in combination with RandomAccessFile.
+This library would have been possible with netty!
+
 Special thanks to [Siguza](http://siguza.net/) who released [his findings on the format](http://classic.cultrix.org/specs/c2m_lib.html).

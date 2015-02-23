@@ -1,12 +1,12 @@
 package me.nithanim.cultures.formats.lib.internal;
 
-import io.netty.buffer.ByteBuf;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 public class ArchiveFileDirs extends ArchiveFileBase {
     protected DirMeta[] dirMetas;
     
-    public ArchiveFileDirs(ByteBuf buf) {
-        super(buf);
+    public ArchiveFileDirs(Buffer buffer) {
+        super(buffer);
     }
 
     public DirMeta[] getDirMetas() {
@@ -19,21 +19,21 @@ public class ArchiveFileDirs extends ArchiveFileBase {
 
     @Override
     public void readMetas() {
-        buf.readerIndex(0);
-        this.unknown = buf.readInt();
-        int dirCount = buf.readInt();
-        int fileCount = buf.readInt();
+        buffer.readerIndex(0);
+        this.unknown = buffer.readInt();
+        int dirCount = buffer.readInt();
+        int fileCount = buffer.readInt();
         
         dirMetas = new DirMeta[dirCount];
-        readDirMetas(buf, dirMetas);
+        readDirMetas(buffer, dirMetas);
         
         fileMetas = new FileMetaImpl[fileCount];
-        readFileMetas(buf, fileMetas);
+        readFileMetas(buffer, fileMetas);
     }
     
-    protected void readDirMetas(ByteBuf buf, DirMeta[] dirMetas) {
+    protected void readDirMetas(Buffer buffer, DirMeta[] dirMetas) {
         for(int i = 0; i < dirMetas.length; i++) {
-            DirMeta dirMeta = new DirMeta(buf);
+            DirMeta dirMeta = new DirMeta(buffer);
             dirMetas[i] = dirMeta;
         }
     }

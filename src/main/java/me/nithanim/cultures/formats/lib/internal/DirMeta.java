@@ -1,13 +1,13 @@
 package me.nithanim.cultures.formats.lib.internal;
 
-import io.netty.buffer.ByteBuf;
 import java.nio.charset.Charset;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 public class DirMeta {
     private String name;
     private long level;
 
-    public DirMeta(ByteBuf buffer) {
+    public DirMeta(Buffer buffer) {
         byte[] bytes = new byte[buffer.readInt()];
         buffer.readBytes(bytes);
         this.name = new String(bytes, Charset.forName("US-ASCII"));

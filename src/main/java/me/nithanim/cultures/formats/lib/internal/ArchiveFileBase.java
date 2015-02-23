@@ -1,15 +1,15 @@
 package me.nithanim.cultures.formats.lib.internal;
 
-import io.netty.buffer.ByteBuf;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 public abstract class ArchiveFileBase implements ArchiveFile {
-    protected final ByteBuf buf;
+    protected final Buffer buffer;
     
     protected int unknown;
     protected FileMetaImpl[] fileMetas;
 
-    public ArchiveFileBase(ByteBuf buf) {
-        this.buf = buf;
+    public ArchiveFileBase(Buffer buffer) {
+        this.buffer = buffer;
     }
     
     @Override
@@ -27,7 +27,7 @@ public abstract class ArchiveFileBase implements ArchiveFile {
         return fileMetas;
     }
     
-    protected void readFileMetas(ByteBuf buf, FileMetaImpl[] fileMetas) {
+    protected void readFileMetas(Buffer buf, FileMetaImpl[] fileMetas) {
         for(int i = 0; i < fileMetas.length; i++) {
             FileMetaImpl fileMeta = new FileMetaImpl(buf);
             fileMetas[i] = fileMeta;

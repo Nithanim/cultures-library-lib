@@ -1,9 +1,8 @@
 package me.nithanim.cultures.formats.lib.modifiable;
 
-import io.netty.buffer.ByteBuf;
 import java.nio.charset.Charset;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
-import me.nithanim.cultures.formats.lib.util.Disposable;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 /**
  * A wrapper class that can write the table entry at the beginning
@@ -11,17 +10,17 @@ import me.nithanim.cultures.formats.lib.util.Disposable;
  * content starting position in the table entry when actually writing
  * the content.
  */
-class ArchiveFileWithTableLink implements Disposable {
+class ArchiveFileWithTableLink {
     private static final Charset CHARSET = Charset.forName("US-ASCII");
     
     private final ArchiveFile archiveFile;
-    private ByteBuf tableEntryBuffer;
+    private Buffer tableEntryBuffer;
 
     public ArchiveFileWithTableLink(ArchiveFile archiveFile) {
         this.archiveFile = archiveFile;
     }
 
-    public void writeTable(ByteBuf buffer) {
+    public void writeTable(Buffer buffer) {
         this.tableEntryBuffer = buffer;
         buffer.writeInt(archiveFile.getFullPath().length());
         buffer.writeBytes(archiveFile.getFullPath().getBytes(CHARSET));
@@ -29,10 +28,12 @@ class ArchiveFileWithTableLink implements Disposable {
         buffer.writeInt(archiveFile.getSize());
     }
 
-    public void writeContents(ByteBuf buffer, int contentAddr) {
-        int contentPosFieldInTableEntry = tableEntryBuffer.capacity() - 4 - 4;
+    public void writeContents(Buffer destBuffer, int contentAddr) {
+        long contentPosFieldInTableEntry = tableEntryBuffer.capacity() - 4 - 4;
         tableEntryBuffer.setInt(contentPosFieldInTableEntry, contentAddr);
-        buffer.writeBytes(archiveFile.getBuffer());
+        Buffer srcBuffer = archiveFile.getBuffer();
+        destBuffer.writeBytes(srcBuffer);
+        srcBuffer.dispose();
     }
 
     public int getTableSize() {
@@ -45,11 +46,5 @@ class ArchiveFileWithTableLink implements Disposable {
 
     public ArchiveFile getArchiveFile() {
         return archiveFile;
-    }
-
-    @Override
-    public void dispose() {
-        tableEntryBuffer.release();
-        tableEntryBuffer = null;
     }
 }

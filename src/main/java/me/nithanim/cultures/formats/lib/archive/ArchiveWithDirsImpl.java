@@ -1,13 +1,9 @@
 package me.nithanim.cultures.formats.lib.archive;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,15 +14,17 @@ import me.nithanim.cultures.formats.lib.ReadableArchiveFileImpl;
 import me.nithanim.cultures.formats.lib.internal.ArchiveFileDirs;
 import me.nithanim.cultures.formats.lib.internal.DirMeta;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 import me.nithanim.cultures.formats.lib.util.Disposable;
 import me.nithanim.cultures.formats.lib.util.Disposer;
+import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
 
 public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Disposable {
     private File boundTo;
     
     private RandomAccessFile randomAccessFile;
     protected ArchiveFileDirs internal;
-    private ByteBuf buffer;
+    private Buffer buffer;
     
     private List<ArchiveDirectory> archiveDirectories;
     private List<ReadableArchiveFile> archiveFiles;
@@ -88,8 +86,7 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Di
     }
     
     private void reload() throws IOException {
-        MappedByteBuffer mbb = randomAccessFile.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, randomAccessFile.length());
-        buffer = Unpooled.unmodifiableBuffer(Unpooled.wrappedBuffer(mbb)).order(ByteOrder.LITTLE_ENDIAN);
+        buffer = new RandomAccessFileBuffer(randomAccessFile).order(ByteOrder.LITTLE_ENDIAN);
         internal = new ArchiveFileDirs(buffer);
         internal.readMetas();
     }
@@ -136,10 +133,6 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Di
     @Override
     public void dispose() {
         internal = null;
-        if(buffer != null) {
-            buffer.release();
-            buffer = null;
-        }
         
         if(archiveDirectories != null) {
             Disposer.dispose(archiveDirectories);

@@ -1,15 +1,13 @@
 package me.nithanim.cultures.formats.lib.modifiable;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
+import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
 import me.nithanim.cultures.formats.lib.util.UncheckedIOException;
 
 public class VirtualArchiveFile implements ArchiveFile {
@@ -47,13 +45,11 @@ public class VirtualArchiveFile implements ArchiveFile {
     }
 
     @Override
-    public ByteBuf getBuffer() {
-        RandomAccessFile raf;
+    public Buffer getBuffer() {
         try {
-            raf = new RandomAccessFile(src, "r");
-            FileChannel ch = raf.getChannel();
-            MappedByteBuffer mbb = ch.map(FileChannel.MapMode.READ_ONLY, 0, raf.length());
-            return Unpooled.wrappedBuffer(mbb).order(ByteOrder.LITTLE_ENDIAN);
+            RandomAccessFile raf = new RandomAccessFile(src, "r");
+            Buffer buffer = new RandomAccessFileBuffer(raf);
+            return buffer.order(ByteOrder.LITTLE_ENDIAN);
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }

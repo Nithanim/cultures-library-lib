@@ -1,14 +1,14 @@
 package me.nithanim.cultures.formats.lib.internal;
 
-import io.netty.buffer.ByteBuf;
 import java.nio.charset.Charset;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 public class FileMetaImpl implements FileMeta {
     private final String name;
     private final long pos;
     private final long length;
     
-    public FileMetaImpl(ByteBuf buffer) {
+    public FileMetaImpl(Buffer buffer) {
         byte[] bytes = new byte[buffer.readInt()];
         buffer.readBytes(bytes);
         this.name = new String(bytes, Charset.forName("US-ASCII"));

@@ -1,19 +1,19 @@
 package me.nithanim.cultures.formats.lib;
 
-import io.netty.buffer.ByteBuf;
 import java.io.File;
 import java.io.IOException;
 import me.nithanim.cultures.formats.lib.internal.FileExtractor;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 import me.nithanim.cultures.formats.lib.util.Disposable;
 
 public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable {
     private final FileMeta fileMeta;
-    private final ByteBuf buffer;
+    private final Buffer buffer;
     
     private File file;
     
-    public ReadableArchiveFileImpl(FileMeta fileMeta, ByteBuf buffer) {
+    public ReadableArchiveFileImpl(FileMeta fileMeta, Buffer buffer) {
         this.fileMeta = fileMeta;
         this.buffer = buffer.slice((int)fileMeta.getPos(), (int)fileMeta.getLength());
     }
@@ -42,18 +42,20 @@ public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable 
     
     @Override
     public void extractTo(File dest) throws IOException {
-        extractTo0(dest);
+        _extractTo(dest);
     }
 
     @Override
     public void extractToWithOriginalDirectory(File dest) throws IOException {
         File target = new File(dest, getFullPath());
         target.getParentFile().mkdirs();
-        extractTo0(target);
+        _extractTo(target);
     }
     
-    private void extractTo0(File dest) throws IOException {
-        FileExtractor.extract(getBuffer(), dest);
+    private void _extractTo(File dest) throws IOException {
+        Buffer srcBuffer = getBuffer();
+        FileExtractor.extract(srcBuffer, dest);
+        srcBuffer.dispose();
     }
     
     private void ensureFile() {
@@ -63,7 +65,7 @@ public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable 
     }
 
     @Override
-    public ByteBuf getBuffer() {
+    public Buffer getBuffer() {
         return buffer;
     }
 
@@ -79,6 +81,6 @@ public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable 
 
     @Override
     public void dispose() {
-        buffer.release();
+        buffer.dispose();
     }
 }

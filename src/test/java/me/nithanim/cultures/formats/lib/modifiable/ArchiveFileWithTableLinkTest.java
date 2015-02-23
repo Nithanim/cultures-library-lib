@@ -1,7 +1,5 @@
 package me.nithanim.cultures.formats.lib.modifiable;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -9,6 +7,8 @@ import me.nithanim.cultures.formats.lib.ArchiveFile;
 import me.nithanim.cultures.formats.lib.ReadableArchiveFileImpl;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
+import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.cultures.formats.lib.util.ByteArrayBuffer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -53,24 +53,26 @@ public class ArchiveFileWithTableLinkTest {
     @Test
     public void testWriteTable() {
         int l = 4 + name.length() + 4 + 4;
-        ByteBuf expectedBuffer = Unpooled.buffer(l, l).order(ByteOrder.LITTLE_ENDIAN);
+        Buffer expectedBuffer = new ByteArrayBuffer(l).order(ByteOrder.LITTLE_ENDIAN);
         expectedBuffer.writeInt(name.length()).writeBytes(nameAsBytes);
         expectedBuffer.writeInt(-1).writeInt(content.length);
-        ByteBuf destBuffer = Unpooled.buffer(l, l).order(ByteOrder.LITTLE_ENDIAN);
+        byte[] byteArray = new byte[l];
+        Buffer destBuffer = new ByteArrayBuffer(byteArray).order(ByteOrder.LITTLE_ENDIAN);
         
         awt.writeTable(destBuffer);
-        assertArrayEquals(expectedBuffer.array(), destBuffer.array());
+        assertArrayEquals(expectedBuffer.array(), byteArray);
     }
 
     @Test
     public void testWriteContents() {
         int l = 4 + name.length() + 4 + 4;
-        ByteBuf tableEntry = Unpooled.buffer(l, l).order(ByteOrder.LITTLE_ENDIAN);
+        byte[] byteArray = new byte[l];
+        Buffer tableEntry = new ByteArrayBuffer(byteArray).order(ByteOrder.LITTLE_ENDIAN);
         awt.writeTable(tableEntry);
         byte[] targetContent = new byte[content.length];
         
         //content written correctly
-        awt.writeContents(Unpooled.wrappedBuffer(targetContent).writerIndex(0), contentPos);
+        awt.writeContents(new ByteArrayBuffer(targetContent), contentPos);
         assertArrayEquals(content, targetContent);
         
         //table pos update correctly
@@ -91,6 +93,6 @@ public class ArchiveFileWithTableLinkTest {
 
     private ArchiveFile getDummyArchiveFile() {
         FileMeta fileMeta = new FileMetaImpl(name, contentPos, content.length);
-        return new ReadableArchiveFileImpl(fileMeta, Unpooled.wrappedBuffer(content));
+        return new ReadableArchiveFileImpl(fileMeta, new ByteArrayBuffer(content));
     }
 }

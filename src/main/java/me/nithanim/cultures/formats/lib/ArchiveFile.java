@@ -1,8 +1,8 @@
 package me.nithanim.cultures.formats.lib;
 
-import io.netty.buffer.ByteBuf;
 import java.io.File;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
+import me.nithanim.cultures.formats.lib.util.Buffer;
 
 public interface ArchiveFile {
     /**
@@ -38,7 +38,7 @@ public interface ArchiveFile {
      * 
      * @return 
      */
-    ByteBuf getBuffer();
+    Buffer getBuffer();
     
     int getSize();
     
