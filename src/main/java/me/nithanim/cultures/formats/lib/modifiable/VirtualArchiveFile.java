@@ -6,9 +6,9 @@ import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
-import me.nithanim.cultures.formats.lib.util.Buffer;
-import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
-import me.nithanim.cultures.formats.lib.util.UncheckedIOException;
+import me.nithanim.longbuffer.Buffer;
+import me.nithanim.longbuffer.RandomAccessFileBuffer;
+import me.nithanim.longbuffer.UncheckedIOException;
 
 public class VirtualArchiveFile implements ArchiveFile {
     private final File virtualPath;

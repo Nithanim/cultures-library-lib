@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 import me.nithanim.cultures.formats.lib.ArchiveDirectory;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
-import me.nithanim.cultures.formats.lib.util.Buffer;
-import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
+import me.nithanim.longbuffer.Buffer;
+import me.nithanim.longbuffer.RandomAccessFileBuffer;
 
 public class LibWriter {
     private static final Charset CHARSET = Charset.forName("US-ASCII");

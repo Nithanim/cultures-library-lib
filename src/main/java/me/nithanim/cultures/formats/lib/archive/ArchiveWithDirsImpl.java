@@ -14,10 +14,10 @@ import me.nithanim.cultures.formats.lib.ReadableArchiveFileImpl;
 import me.nithanim.cultures.formats.lib.internal.ArchiveFileDirs;
 import me.nithanim.cultures.formats.lib.internal.DirMeta;
 import me.nithanim.cultures.formats.lib.internal.FileMetaImpl;
-import me.nithanim.cultures.formats.lib.util.Buffer;
-import me.nithanim.cultures.formats.lib.util.Disposable;
-import me.nithanim.cultures.formats.lib.util.Disposer;
-import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
+import me.nithanim.longbuffer.Buffer;
+import me.nithanim.longbuffer.Disposable;
+import me.nithanim.longbuffer.Disposer;
+import me.nithanim.longbuffer.RandomAccessFileBuffer;
 
 public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Disposable {
     private File boundTo;
@@ -145,7 +145,7 @@ public class ArchiveWithDirsImpl implements ArchiveWithDirs, ReadableArchive, Di
         }
         
         try {
-            randomAccessFile.close();
+            buffer.dispose();
         } catch(Exception e) {
         }
         randomAccessFile = null;

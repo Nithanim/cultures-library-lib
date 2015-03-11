@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import me.nithanim.cultures.formats.lib.internal.FileExtractor;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
-import me.nithanim.cultures.formats.lib.util.Buffer;
-import me.nithanim.cultures.formats.lib.util.Disposable;
+import me.nithanim.longbuffer.Buffer;
+import me.nithanim.longbuffer.Disposable;
 
 public class ReadableArchiveFileImpl implements ReadableArchiveFile, Disposable {
     private final FileMeta fileMeta;

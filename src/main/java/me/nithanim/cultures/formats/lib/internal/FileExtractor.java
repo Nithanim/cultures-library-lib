@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteOrder;
-import me.nithanim.cultures.formats.lib.util.Buffer;
-import me.nithanim.cultures.formats.lib.util.RandomAccessFileBuffer;
+import me.nithanim.longbuffer.Buffer;
+import me.nithanim.longbuffer.RandomAccessFileBuffer;
 
 public class FileExtractor {
     public static void extract(Buffer src, File dest) throws IOException {

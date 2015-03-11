@@ -11,7 +11,7 @@ import me.nithanim.cultures.formats.lib.ArchiveDirectory;
 import me.nithanim.cultures.formats.lib.ArchiveDirectoryImpl;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
 import me.nithanim.cultures.formats.lib.internal.DirMeta;
-import me.nithanim.cultures.formats.lib.util.Disposable;
+import me.nithanim.longbuffer.Disposable;
 
 public class VirtualArchiveWithDirs implements VirtualArchive, Disposable {
     private final List<VirtualArchiveFile> filesToBeAdded = new LinkedList<VirtualArchiveFile>();

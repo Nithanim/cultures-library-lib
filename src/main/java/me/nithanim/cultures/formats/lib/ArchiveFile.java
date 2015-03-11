@@ -2,7 +2,7 @@ package me.nithanim.cultures.formats.lib;
 
 import java.io.File;
 import me.nithanim.cultures.formats.lib.internal.FileMeta;
-import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.longbuffer.Buffer;
 
 public interface ArchiveFile {
     /**

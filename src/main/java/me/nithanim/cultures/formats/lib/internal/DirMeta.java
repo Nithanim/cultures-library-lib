@@ -1,7 +1,7 @@
 package me.nithanim.cultures.formats.lib.internal;
 
 import java.nio.charset.Charset;
-import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.longbuffer.Buffer;
 
 public class DirMeta {
     private String name;

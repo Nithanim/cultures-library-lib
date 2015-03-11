@@ -2,7 +2,7 @@ package me.nithanim.cultures.formats.lib.modifiable;
 
 import java.nio.charset.Charset;
 import me.nithanim.cultures.formats.lib.ArchiveFile;
-import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.longbuffer.Buffer;
 
 /**
  * A wrapper class that can write the table entry at the beginning

@@ -1,6 +1,6 @@
 package me.nithanim.cultures.formats.lib.internal;
 
-import me.nithanim.cultures.formats.lib.util.Buffer;
+import me.nithanim.longbuffer.Buffer;
 
 public abstract class ArchiveFileBase implements ArchiveFile {
     protected final Buffer buffer;
